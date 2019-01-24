@@ -1,4 +1,8 @@
-# udp demo simple select server -- Adrian Veliz, modified from code by Eric Freudenthal
+#! /usr/bin/env python3
+# udp demo -- simple select-driven uppercase and lowercase server
+
+# Eric Freudenthal with mods by Adrian Veliz
+
 import sys
 from socket import *
 from select import select
@@ -30,9 +34,11 @@ lowerServerSocket.bind(lowerServerAddr)
 lowerServerSocket.setblocking(False)
 
 
-readSockFunc = {}               # dictionaries from socket to function 
-writeSockFunc = {}
-errorSockFunc = {}
+# map socket to function to call when socket is....
+readSockFunc = {}               # ready for reading
+writeSockFunc = {}              # ready for writing
+errorSockFunc = {}              # broken
+
 timeout = 5                     # seconds
 
 readSockFunc[upperServerSocket] = uppercase

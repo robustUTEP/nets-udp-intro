@@ -1,16 +1,16 @@
 #! /usr/bin/env python3
-# udp demo simple select server
-# Adrian Veliz, modified from code by Eric Freudenthal
+# udp demo -- simple select-driven uppercase server
+
+# Eric Freudenthal with mods by Adrian Veliz
 
 import sys
 from socket import *
 from select import select
 
-# default params
 upperServerAddr = ("", 50000)   # any addr, port 50,000
-    
-    
+
 def uppercase(sock):
+  "run this function when sock has rec'd a message"
   message, clientAddrPort = sock.recvfrom(2048)
   print("from %s: rec'd '%s'" % (repr(clientAddrPort), message))
   modifiedMessage = message.decode().upper().encode()
@@ -21,11 +21,14 @@ upperServerSocket = socket(AF_INET, SOCK_DGRAM)
 upperServerSocket.bind(upperServerAddr)
 upperServerSocket.setblocking(False)
 
-readSockFunc = {}               # dictionaries from socket to function 
-writeSockFunc = {}
-errorSockFunc = {}
-timeout = 5                     # seconds
+# map socket to function to call when socket is....
+readSockFunc = {}               # ready for reading
+writeSockFunc = {}              # ready for writing
+errorSockFunc = {}              # broken
 
+timeout = 5                     # select delay before giving up, in seconds
+
+# function to call when upperServerSocket is ready for reading
 readSockFunc[upperServerSocket] = uppercase
 
 print("ready to receive")
