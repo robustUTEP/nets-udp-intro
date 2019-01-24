@@ -17,7 +17,7 @@ try:
     args = sys.argv[1:]
     while args:
         sw = args[0]; del args[0]
-        if sw == "--serverAddr":
+        if sw in ("--serverAddr", "-s"):
             addr, port = re.split(":", args[0]); del args[0]
             serverAddr = (addr, int(port))
         else:
@@ -34,4 +34,4 @@ print("Input lowercase msg")
 message = sys.stdin.readline()[:-1]     # delete final \n
 clientSocket.sendto(message.encode(), serverAddr)
 modifiedMessage, serverAddrPort = clientSocket.recvfrom(2048)
-print("Modified message from %s is <%s>" % (repr(serverAddrPort), modifiedMessage.decode()))
+print('Modified message from %s is "%s"' % (repr(serverAddrPort), modifiedMessage.decode()))

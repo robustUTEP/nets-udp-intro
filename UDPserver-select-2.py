@@ -13,16 +13,16 @@ lowerServerAddr = ("", 50001)   # any addr, port 50,001
     
     
 def uppercase(sock):
-	message, clientAddrPort = sock.recvfrom(2048)
-	print("from %s: rec'd '%s'" % (repr(clientAddrPort), message))
-	modifiedMessage = message.upper()
-	sock.sendto(modifiedMessage, clientAddrPort)
-	
+  message, clientAddrPort = sock.recvfrom(2048)
+  print("from %s: rec'd '%s'" % (repr(clientAddrPort), message))
+  modifiedMessage = message.upper()
+  sock.sendto(modifiedMessage, clientAddrPort)
+  
 def lowercase(sock):
-	message, clientAddrPort = sock.recvfrom(2048)
-	print("from %s: rec'd '%s'" % (repr(clientAddrPort), message))
-	modifiedMessage = message.lower()
-	sock.sendto(modifiedMessage, clientAddrPort)
+  message, clientAddrPort = sock.recvfrom(2048)
+  print("from %s: rec'd '%s'" % (repr(clientAddrPort), message))
+  modifiedMessage = message.lower()
+  sock.sendto(modifiedMessage, clientAddrPort)
 
 
 upperServerSocket = socket(AF_INET, SOCK_DGRAM)
@@ -35,23 +35,24 @@ lowerServerSocket.setblocking(False)
 
 
 # map socket to function to call when socket is....
-readSockFunc = {}               # ready for reading
-writeSockFunc = {}              # ready for writing
-errorSockFunc = {}              # broken
+readSockFunc = {}         # ready for reading
+writeSockFunc = {}        # ready for writing
+errorSockFunc = {}        # broken
 
-timeout = 5                     # seconds
+timeout = 5         # seconds
 
 readSockFunc[upperServerSocket] = uppercase
 readSockFunc[lowerServerSocket] = lowercase
 
 print("ready to receive")
 while 1:
-	readRdySet, writeRdySet, errorRdySet = select(list(readSockFunc.keys()),
-                                                      list(writeSockFunc.keys()), 
-                                                      list(errorSockFunc.keys()),
-                                                      timeout)
-        if not readRdySet and not writeRdySet and not errorRdySet:
-                print("timeout: no events")
-	for sock in readRdySet:
-                readSockFunc[sock](sock)
+  readRdySet, writeRdySet, errorRdySet = select(list(readSockFunc.keys()),
+                                                list(writeSockFunc.keys()), 
+                                                list(errorSockFunc.keys()),
+                                                timeout)
+  if not readRdySet and not writeRdySet and not errorRdySet:
+    print("timeout: no events")
+  for sock in readRdySet:
+    readSockFunc[sock](sock)
+
 
